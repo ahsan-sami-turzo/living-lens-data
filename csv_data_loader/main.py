@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Connect to the postgresql database
-# conn = psycopg2.connect(database="living-lens", user="postgres", password="sami1233", host="localhost", port="5432")
 # Get the postgresql connection variables from environment variables
 host = os.environ['PGHOST']
 user = os.environ['PGUSER']
