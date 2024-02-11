@@ -10,7 +10,7 @@ conn, cur = connect_to_db()
 create_tables
 
 # Load the data
-# data_loader.load_data()
+data_loader.load_lifestyle_data()
 
 # Process the Excel files
 # process_excel_files(cur, conn)
