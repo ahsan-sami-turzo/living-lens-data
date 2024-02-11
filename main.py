@@ -68,9 +68,23 @@ for file_name in data_files:
             # Get the title, priceAverage, priceMin, and priceMax from the sheet
             title = sheet.cell_value(row, 1)
 
-            price_average = float(re.search(r'\d+\.?\d*', sheet.cell_value(row, 2)).group())
-            price_min = float(str(sheet.cell_value(row, 3)).replace(',', '').replace(' ', ''))
-            price_max = float(str(sheet.cell_value(row, 4)).replace(',', '').replace(' ', ''))
+            # Get the priceAverage, priceMin, and priceMax from the sheet
+            # Use regular expressions to extract the first number in the cell value
+            # If no number is found, default to 0.0
+            price_average = sheet.cell_value(row, 2)
+            if not isinstance(price_average, float):
+                price_average_match = re.search(r'\d+\.?\d*', price_average)
+                price_average = float(price_average_match.group()) if price_average_match else 0.0
+
+            price_min = sheet.cell_value(row, 3)
+            if not isinstance(price_min, float):
+                price_min_match = re.search(r'\d+\.?\d*', price_min)
+                price_min = float(price_min_match.group()) if price_min_match else 0.0
+
+            price_max = sheet.cell_value(row, 4)
+            if not isinstance(price_max, float):
+                price_max_match = re.search(r'\d+\.?\d*', price_max)
+                price_max = float(price_max_match.group()) if price_max_match else 0.0
 
             # Insert the data into the Expense table
             cur.execute(
@@ -80,3 +94,4 @@ for file_name in data_files:
 
 # Close the connection
 conn.close()
+print("data loaded successfully")
