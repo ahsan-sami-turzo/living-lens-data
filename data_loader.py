@@ -104,11 +104,11 @@ def load_lifestyle_data():
                 session.add(temp)
 
         # Update city table with foreign keys based on country data
-        session.query(City).filter(City.city_name.in_(['Berlin', 'Frankfurt', 'Münich'])).update(
+        session.query(City).filter(City.city_name.in_(['Berlin', 'Frankfurt', 'Munich', 'Münich'])).update(
             {City.country_id_fk: 1}, synchronize_session=False)
         session.query(City).filter(City.city_name.in_(['Milan', 'Rome', 'Venice'])).update({City.country_id_fk: 2},
                                                                                            synchronize_session=False)
-        session.query(City).filter(City.city_name.in_(['Helsinki', 'Lappeenranta'])).update({City.country_id_fk: 3},
+        session.query(City).filter(City.city_name.in_(['Helsinki', 'Lappeenranta', 'Lahti'])).update({City.country_id_fk: 3},
                                                                                             synchronize_session=False)
 
         session.commit()
