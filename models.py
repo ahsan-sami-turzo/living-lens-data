@@ -66,6 +66,9 @@ class Price(Base):
     min_price = Column(Float)
     max_price = Column(Float)
 
-    def __init__(self, city_id, subcategory_id):
+    def __init__(self, city_id, subcategory_id, average_price, min_price, max_price):
         self.city_id_fk = city_id
         self.subcategory_id_fk = subcategory_id
+        self.average_price = average_price
+        self.min_price = min_price
+        self.max_price = max_price
