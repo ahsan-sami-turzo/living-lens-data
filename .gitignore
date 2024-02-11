@@ -183,4 +183,6 @@ data/
 # PyCharm
 .idea/
 
-data_files/
+# data folder
+data_files
+data_files/*
