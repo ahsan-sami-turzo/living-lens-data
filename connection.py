@@ -17,7 +17,8 @@ cursor.execute('''UPDATE city SET country_id_fk = 2 WHERE city_name='Milan' OR
                                                                     city_name='Rome' OR
                                                                     city_name= 'Venice' ''')
 cursor.execute('''UPDATE city SET country_id_fk = 3 WHERE city_name='Helsinki' OR
-                                                                    city_name='Lappeenranta' ''')
+                                                                    city_name='Lappeenranta' OR
+                                                                    city_name = 'Lahti' ''')
                                                                    
 
 
@@ -249,6 +250,30 @@ for data in df_avg_prices:
     i = i + 1
     subcat_inx = subcat_inx + 1
 
+## fill prices table with Lahti data
+lahti_df = pd.read_excel(path + "Lahti.xlsx", na_values = "nan", 
+                           usecols="A:E", )
+
+      
+df_avg_prices = lahti_df.iloc[:,2]
+df_min_prices = lahti_df.iloc[:,3]
+df_max_prices = lahti_df.iloc[:,4]
+
+
+i = 0
+subcat_inx = 1
+for data in df_avg_prices:
+    data = str(data).replace(",", "")
+    df_min_prices[i] = str(df_min_prices[i]).replace(",", "")
+    df_max_prices[i] = str(df_max_prices[i]).replace(",", "")
+    cursor.execute('''INSERT INTO price (city_id_fk, subcategory_id_fk, average_price, min_price, max_price)
+                    VALUES (9,
+                            '''+ str(subcat_inx) +''',
+                            ''' + str(data) + ''',
+                            ''' + df_min_prices[i] +''',
+                            '''+ df_max_prices[i] +''')''')
+    i = i + 1
+    subcat_inx = subcat_inx + 1
 
 
 
