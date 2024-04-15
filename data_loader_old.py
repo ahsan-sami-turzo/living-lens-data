@@ -10,9 +10,9 @@ from database import create_session
 from models import Lifestyle, Country, City, Category, SubCategory, Price
 
 
-def load_cities(country):
+def load_cities():
     # Get a list of all files in the directory
-    data_files = os.listdir(f"data_files/numbeo_data/{country}")
+    data_files = os.listdir('data_files/city_data')
 
     # Create session
     session = create_session()
@@ -23,7 +23,7 @@ def load_cities(country):
             # Check if the file is an .xlsx file
             if file_name.endswith('.xlsx'):
                 # Construct the full file path
-                file_path = os.path.join(f"data_files/numbeo_data/{country}", file_name)
+                file_path = os.path.join('data_files/city_data', file_name)
 
                 # Open the xlsx file
                 book = xlrd.open_workbook(file_path)
@@ -60,10 +60,78 @@ def load_cities(country):
         session.close()
 
 
+def load_lifestyle_data():
+    # Create session
+    session = create_session()
 
-def update_subcategory_table(country):
+    try:
+        path = "data_files/lifestyle_data/Lifestyle.xlsx"
+        base_df = pd.read_excel(path, na_values="nan", usecols="A:E")
+
+        # Load countries' data
+        countries = base_df.iloc[:, 0]
+        for country in countries:
+            if str(country) != 'nan':
+                temp = Country(str(country))
+                session.add(temp)
+
+        # Load cities' data
+        cities = base_df.iloc[:, 1]
+        for city in cities:
+            if str(city) != 'nan':
+                temp = City(str(city))
+                session.add(temp)
+
+        # Load lifestyles' data
+        lifestyles = base_df.iloc[:, 2]
+        for lifestyle in lifestyles:
+            if str(lifestyle) != 'nan':
+                temp = Lifestyle(str(lifestyle))
+                session.add(temp)
+
+        # Load categories' data
+        categories = base_df.iloc[:, 3]
+        for category in categories:
+            if str(category) != 'nan':
+                temp = Category(str(category))
+                session.add(temp)
+
+        # Load subcategories' data
+        subcategories = base_df.iloc[:, 4]
+        for subcategory in subcategories:
+            if str(subcategory) != 'nan':
+                temp = SubCategory(str(subcategory))
+                session.add(temp)
+
+        # Update city table with foreign keys based on country data
+        session.query(City).filter(City.city_name.in_(['Berlin', 'Frankfurt', 'Munich', 'Münich'])).update(
+            {City.country_id_fk: 1}, synchronize_session=False)
+        session.query(City).filter(City.city_name.in_(['Milan', 'Rome', 'Venice'])).update({City.country_id_fk: 2},
+                                                                                           synchronize_session=False)
+        session.query(City).filter(City.city_name.in_(['Helsinki', 'Lappeenranta', 'Lahti'])).update({City.country_id_fk: 3},
+                                                                                            synchronize_session=False)
+
+        session.commit()
+
+    except Exception as e:
+        # Rollback the changes on error
+        session.rollback()
+        # Get current exception information
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        # Extract stack entries
+        traceback_details = traceback.extract_tb(exc_traceback)
+        # Get filename and line number of the most recent stack entry
+        filename, line_number, func_name, text = traceback_details[-1]
+        print(f"An error occurred in file {filename} on line {line_number}: {e}")
+
+    finally:
+        # Close the session
+        session.close()
+
+
+def update_subcategory_table():
     # Get a list of all files in the directory
-    data_files = os.listdir(f"data_files/numbeo_data/{country}")
+    data_files = os.listdir('data_files')
 
     # Create session
     session = create_session()
@@ -74,7 +142,7 @@ def update_subcategory_table(country):
             # Check if the file is an .xlsx file
             if file_name.endswith('.xlsx'):
                 # Construct the full file path
-                file_path = os.path.join(f"data_files/numbeo_data/{country}", file_name)
+                file_path = os.path.join('data_files', file_name)
 
                 # Open the xlsx file
                 df = pd.read_excel(file_path)
@@ -150,9 +218,9 @@ def update_subcategory_table(country):
         session.close()
 
 
-def load_city_data(country):
+def load_city_data():
     # Get a list of all files in the directory
-    data_files = os.listdir(f"data_files/numbeo_data/{country}")
+    data_files = os.listdir('data_files/city_data')
 
     # Create session
     session = create_session()
@@ -163,7 +231,7 @@ def load_city_data(country):
             # Check if the file is an .xlsx file
             if file_name.endswith('.xlsx'):
                 # Construct the full file path
-                file_path = os.path.join(f"data_files/numbeo_data/{country}", file_name)
+                file_path = os.path.join('data_files/city_data', file_name)
 
                 # Open the xlsx file
                 df = pd.read_excel(file_path)
